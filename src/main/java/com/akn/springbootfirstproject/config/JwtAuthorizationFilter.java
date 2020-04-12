@@ -24,7 +24,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 
     private TokenUtils tokenUtils;
 
-    public JwtAuthorizationFilter(AuthenticationManager authenticationManager,TokenUtils tokenUtils) {
+    public JwtAuthorizationFilter(AuthenticationManager authenticationManager, TokenUtils tokenUtils) {
         super(authenticationManager);
         this.tokenUtils = tokenUtils;
     }
@@ -32,12 +32,10 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
         String header = request.getHeader(HEADER_STRING);
-        if (header == null || !header.startsWith(TOKEN_PREFIX)) {
-            chain.doFilter(request, response);
+        if (header != null && header.startsWith(TOKEN_PREFIX)) {
+            UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
-        UsernamePasswordAuthenticationToken authentication = getAuthentication(request);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 

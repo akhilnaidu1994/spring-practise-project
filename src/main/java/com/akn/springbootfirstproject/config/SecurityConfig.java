@@ -4,7 +4,6 @@ import com.akn.springbootfirstproject.repository.UserRepository;
 import com.akn.springbootfirstproject.service.ApplicationUserDetailsService;
 import com.akn.springbootfirstproject.utils.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -37,7 +36,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
-                .addFilter(new JwtRefreshFilter(authenticationManager(),tokenUtils,userRepository))
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenUtils))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), tokenUtils))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
