@@ -32,13 +32,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .authorizeRequests().antMatchers("/rest/signup").permitAll()
+                .authorizeRequests().antMatchers("/rest/signup", "/refresh").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
+                .addFilter(refreshFilter())
                 .addFilter(new JwtAuthenticationFilter(authenticationManager(), tokenUtils))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), tokenUtils))
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+    }
+
+    @Bean
+    protected JwtRefreshTokenAuthenticationFilter refreshFilter() throws Exception {
+        return new JwtRefreshTokenAuthenticationFilter(authenticationManager(), tokenUtils, userRepository);
     }
 
     @Override
